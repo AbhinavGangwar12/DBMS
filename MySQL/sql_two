@@ -1,0 +1,96 @@
+CREATE DATABASE ORG;
+SHOW DATABASES;
+USE ORG;
+
+CREATE TABLE WORKER(
+	WORKER_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    FRIST_NAME CHAR(25),
+    LAST_NAME CHAR(25),
+    SALARY INT,
+    JOIN_DATE DATE,
+    DEPARTMENT CHAR(30)
+);
+
+INSERT INTO WORKER 
+	(WORKER_ID,FRIST_NAME,LAST_NAME,SALARY,JOIN_DATE,DEPARTMENT) VALUES
+    (001,'Mahi','Pal',20000,'14-02-23','HR'),
+    (002,'Mahindra','Singh',200000,'11-04-20','Admin'),
+    (003,'Ram','Agrawal',10000,'12-02-19','HR'),
+    (004,'Anskush','Kumar',100000,'16-11-18','Admin'),
+    (005,'Vaibhav','Singh',30000,'29-02-20','Admin'),
+    (006,'Arush','Bhola',200000,'22-08-22','Account'),
+    (007,'Mahima','Saxena',70000,'15-07-21','Account'),
+    (008,'Samarth','Saxena',230000,'14-10-22','Admin');
+    
+SELECT * FROM WORKER;
+CREATE TABLE BONUS(
+	WORKER_REF_ID INT,
+    BONUS_AMOUNT INT(10),
+    BONUS_DATE DATE,
+    FOREIGN KEY(WORKER_REF_ID)
+		REFERENCES WORKER(WORKER_ID)
+        ON DELETE CASCADE
+);
+INSERT INTO BONUS (WORKER_REF_ID,BONUS_AMOUNT,BONUS_DATE) VALUES
+	(001,5000,'01-02-24'),
+    (003,5000,'01-02-24'),
+    (002,5000,'01-02-24'),
+    (001,4000,'01-06-24'),
+    (007,5000,'01-06-24');
+SELECT * FROM BONUS;
+
+CREATE TABLE TITLE(
+	WORKER_REF_ID INT,
+    WROKER_TITLE CHAR(25),
+    AFFECTED_FROM DATE,
+    FOREIGN KEY(WORKER_REF_ID)
+		REFERENCES WORKER(WORKER_ID)
+        ON DELETE CASCADE
+);
+
+INSERT INTO TITLE (WORKER_REF_ID,WROKER_TITLE,AFFECTED_FROM) VALUES
+	(001,'Manager','22-02-22'),
+    (003,'Executive','20-02-22'),
+    (002,'Asst. Manager','10-02-22'),
+    (005,'Manager','18-02-22'),
+    (006,'Lead','28-02-22'),
+    (004,'lead','17-02-22'),
+    (008,'Executive','23-02-22'),
+    (007,'Asst. Manager','12-02-22');
+    
+SELECT * FROM WORKER WHERE SALARY > 80000;
+SELECT * FROM WORKER WHERE DEPARTMENT = 'HR';
+
+-- Day2
+
+-- wildcard
+SELECT * FROM WORKER WHERE FRIST_NAME LIKE '%m%';-- this will give all the names which are having m in between them
+SELECT * FROM WORKER WHERE FRIST_NAME LIKE '_a%';-- this will give all the names which are having 'a' at the second place in their name
+SELECT * FROM WORKER WHERE FRIST_NAME LIKE '%a_';-- this will give all the names which are having 'a' at the second last place in their name
+SELECT * FROM WORKER WHERE FRIST_NAME LIKE '_a_';-- this will give all the names which are having exactly one character in left and right of their name.
+
+-- sorting using ORDER BY
+SELECT * FROM WORKER ORDER BY SALARY;-- BY DEFAULT IS ASCENDING
+SELECT * FROM WORKER ORDER BY SALARY DESC;-- WILL GIVE IN DESCENDING ORDER
+
+-- distinct values 
+SELECT DISTINCT DEPARTMENT FROM WORKER;
+
+-- grouping the data
+-- generally we perform grouping for aggregation i.e. to find the number of counts for a given dataset 
+-- sql provide GROUP BY function to perform such task and it only works with an aggregate function
+SELECT DEPARTMENT FROM WORKER GROUP BY DEPARTMENT;-- You should keep in mind that the list provided between SELECT and FROM should be provided after GROUP BY keyword
+-- by default GROUP BY is taken as disctinct function in default case when we doesnot provide any aggregate function
+-- Aggregate functions -  COUNT,
+SELECT DEPARTMENT, COUNT(DEPARTMENT) FROM WORKER GROUP BY DEPARTMENT;
+-- Internally, an aggregate function rearranges the table and perform the function after that
+SELECT DEPARTMENT, AVG(SALARY) FROM WORKER GROUP BY DEPARTMENT;
+SELECT DEPARTMENT, MIN(SALARY) FROM WORKER GROUP BY DEPARTMENT;
+SELECT DEPARTMENT, SUM(SALARY) FROM WORKER GROUP BY DEPARTMENT;
+SELECT DEPARTMENT, MAX(SALARY) FROM WORKER GROUP BY DEPARTMENT;
+-- These AVG,MIN,SUM,MA are aggregate funcitons too
+
+-- HAVING keyword is used to filter in GROUP BY(while grouping the elements)
+SELECT DEPARTMENT, COUNT(DEPARTMENT) FROM WORKER GROUP BY DEPARTMENT HAVING COUNT(DEPARTMENT)>2;
+SELECT DEPARTMENT, AVG(SALARY) FROM WORKER GROUP BY DEPARTMENT HAVING AVG(SALARY) < 50000;
+
