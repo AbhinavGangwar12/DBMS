@@ -1,0 +1,76 @@
+-- Day 4 Joins
+
+create database project_management;
+use project_management;
+create table employee(-- parent table
+	id int primary key,
+    fname varchar(20),
+    lname varchar(20),
+    age int not null,
+    emailID varchar(50),
+    phone int,
+    city varchar(15)
+);
+select * from employee;
+create table project(
+	id int primary key,
+    empID int not null,
+    pname varchar(5),
+    startdate date,
+    client_id int not null,
+    foreign key(empID)
+		references employee(id)
+);
+create table client_(
+	id int not null,
+    fname varchar(25),
+    lname varchar(25),
+    age int not null,
+    emailID varchar(50),
+    phone int,
+    city varchar(20),
+    emp_id int not null,
+    foreign key(emp_id)
+		references employee(id)
+);
+select * from client_;
+insert into employee (id,fname,lname,age,emailID,phone,city)
+values  (1,'Aman','Proto',32,'aman@gmail.com',898,'Delhi'),
+		(2,'Yagya','Narayan',44,'yagya@gmail.com',222,'Palam'),
+		(3,'Rahul','BD',22,'rahul@gmail.com',444,'Kolkata'),
+        (4,'jatin','Hermit',31,'jatin@gmail.com',666,'Jaipur'),
+        (5,'PK','Pandey',21,'pk@gmail.com',555,'Raipur');
+        
+insert into project (id,empID,pname,startdate,client_id) values
+	(1,1,'A','2021-04-21',3),
+    (2,2,'B','2021-03-12',1),
+    (3,3,'C','2021-01-16',5),
+    (4,4,'D','2021-04-27',2),
+    (5,5,'E','2021-05-01',4);
+    
+insert into client_ (id,fname,lname,age,emailID,phone,city,emp_id) values
+	(1,'Mac','Rogers',47,'mac@hotmail.com',333,'Kolkata',3),
+    (2,'Max','Piorier',27,'max@gmail.com',222,'Kolkata',3),
+    (3,'Peter','Jain',24,'peter@abc.com',111,'Delhi',1),
+    (4,'Sushant','Aggarwal',23,'sushant@yahoo.com',45454,'Hyderabad',5),
+    (5,'Pratap','Singh',36,'p@xyz.com',77767,'Mumbai',2);
+select * from client_;
+
+-- joins
+
+-- inner join 
+-- enlist all the empolyee's id,names along with the projects allocated to them
+select e.id,e.fname, e.lname, p.id, p.pname from employee as e inner join project as p on e.id = p.empID;
+select * from employee inner join project on employee.id = project.empID;
+
+
+-- fetch out details of the employees which are working from jaipur and having clients from hyderabad
+select e.id,e.fname,e.emailID,e.city,c.fname,c.lname,c.phone,c.city from employee as e 
+inner join client_ as c on e.id = c.emp_id where e.city = 'Raipur' and c.city = 'Hyderabad';
+
+-- left join 
+-- fetch each project allocated to every employee
+select e.fname,p.pname from employee as e
+left join project as p on e.id = p.empID;
+
+
